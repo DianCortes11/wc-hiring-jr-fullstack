@@ -34,11 +34,46 @@ import $t from './libs/test.js'
     Lodash(https://lodash.com/docs) modules.
 */
 import _ from 'lodash'
+
 const source = $t.source(1)
 $t.answer(1, async () => {
   // Your code goes here
-  return 
 })
+
+const idea = source.reduce((result, item)=> {
+  let modelResult = {...result}
+  if(result.byCategories.hasOwnProperty(item.category)){
+    if (item.type === 'income') {
+      modelResult.byCategories[item.category] += item.amount
+    } else {
+      modelResult.byCategories[item.category] -= item.amount 
+    }
+  } else {
+    modelResult.byCategories[item.category] = 
+      item.type ==='income' ? item.amount : -item.amount
+  }
+  if (item.type === 'income') {  
+   return {
+      ...modelResult,
+      income: result.income + item.amount
+    }
+  }
+  return {
+    ...modelResult,
+    expenses: result.expenses + item.amount
+  }
+  
+},{
+  balance: 0,
+  income: 0,
+  expenses: 0,
+  byCategories: {}
+})
+
+const solution = {
+  ...idea, 
+  balance: idea.income - idea.expenses
+}
 
 /*
 2. Asynchronous programming: 
@@ -53,5 +88,15 @@ $t.answer(2, async () => {
     // 1. Get ids: $source.getIds()
     // 2. Get text for every id: $source.getText(id)
     // 3. Return array of texts
-    return 
 })
+
+let resIds;
+  getIds().then(ids=>{
+	resIds = ids
+  })
+  
+let resTexts;
+const promises = resIds.map(id=>getText(id));
+Promise.all(promises).then((texts) => {
+  resTexts = texts
+}); 
